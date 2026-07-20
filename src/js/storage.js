@@ -99,19 +99,28 @@ const Storage = (() => {
     // Actualizar un pedido
     async update(id, updates) {
       try {
+        console.log('UPDATE: Intentando actualizar pedido', id, 'con:', updates);
         const response = await fetch(`${API_URL}/${id}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(updates)
         });
 
-        if (!response.ok) throw new Error('Error al actualizar');
+        console.log('UPDATE: Respuesta status:', response.status);
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error('UPDATE: Error del servidor:', response.status, errorText);
+          throw new Error(`Error ${response.status}: ${errorText}`);
+        }
+
         const data = await response.json();
+        console.log('UPDATE: Pedido actualizado:', data);
 
         // Parsear items y retornar
         return parseOrder(data);
       } catch (error) {
-        console.error('Error al actualizar:', error);
+        console.error('UPDATE: Error al actualizar:', error);
         throw error;
       }
     },
