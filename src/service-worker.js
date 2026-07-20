@@ -56,7 +56,19 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  // Estrategia: Cache first, fallback to network
+  // IMPORTANTE: Las requests a la API NO se cachean (siempre traen data fresca)
+  if (event.request.url.includes('/api/')) {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => {
+          // Fallback offline con caché como último recurso
+          return caches.match(event.request);
+        })
+    );
+    return;
+  }
+
+  // Estrategia para archivos estáticos: Cache first, fallback to network
   event.respondWith(
     caches.match(event.request)
       .then(response => {
