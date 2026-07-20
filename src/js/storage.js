@@ -1,4 +1,12 @@
 // Storage API - Usa backend en lugar de localStorage
+
+// Desactivar service worker temporalmente para testing
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(registrations => {
+    registrations.forEach(reg => reg.unregister());
+  });
+}
+
 const Storage = (() => {
   const API_URL = CONFIG.BACKEND_URL + '/api/pedidos';
 
