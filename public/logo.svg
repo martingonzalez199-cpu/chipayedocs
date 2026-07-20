@@ -1,0 +1,7 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Fondo circular -->
+  <circle cx="100" cy="100" r="95" fill="#C4813B"/>
+
+  <!-- Texto CHIPAYÉ en blanco -->
+  <text x="100" y="115" font-family="Arial, sans-serif" font-size="38" font-weight="bold" text-anchor="middle" fill="white">CHIPAYÉ</text>
+</svg>

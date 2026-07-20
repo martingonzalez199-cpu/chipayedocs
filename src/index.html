@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Chipayé">
+  <meta name="theme-color" content="#C4813B">
+  <meta name="description" content="Chipayé - Chipá con magia. App para tomar pedidos.">
+
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/svg+xml" href="/logo.svg?v=2">
+  <link rel="manifest" href="manifest.json">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz@9..144&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/styles.css">
+
+  <title>Chipayé</title>
+</head>
+<body>
+  <!-- Header con logo -->
+  <header class="header">
+    <div class="header-content">
+      <img src="/logo.svg" alt="Chipayé" class="header-logo">
+      <h1>Chipayé</h1>
+    </div>
+  </header>
+
+  <!-- Main content -->
+  <main>
+    <!-- Resumen de estado -->
+    <section class="summary" id="summary">
+      <!-- Se renderiza dinámicamente -->
+    </section>
+
+    <!-- Filtros -->
+    <nav class="filters" id="filters">
+      <!-- Se renderiza dinámicamente -->
+    </nav>
+
+    <!-- Formulario de nuevo pedido (colapsable) -->
+    <section class="form-section">
+      <button class="btn-toggle-form" id="toggleFormBtn">
+        <span class="icon">+</span> Nuevo pedido
+      </button>
+
+      <form class="order-form" id="orderForm" style="display: none;">
+        <div class="form-group">
+          <label for="clientName">Nombre del cliente</label>
+          <input type="text" id="clientName" placeholder="Ej: Juan García" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="qty1">Chipa común 1kg</label>
+            <input type="number" id="qty1" placeholder="0" min="0" value="0">
+          </div>
+          <div class="form-group">
+            <label for="qty2">Chipa común 1/2kg</label>
+            <input type="number" id="qty2" placeholder="0" min="0" value="0">
+          </div>
+          <div class="form-group">
+            <label for="qty3">Chipan común 1kg</label>
+            <input type="number" id="qty3" placeholder="0" min="0" value="0">
+          </div>
+          <div class="form-group">
+            <label for="qty4">Chipan común 1/2kg</label>
+            <input type="number" id="qty4" placeholder="0" min="0" value="0">
+          </div>
+          <div class="form-group">
+            <label for="qty5">Chipan 200gr x 1kg</label>
+            <input type="number" id="qty5" placeholder="0" min="0" value="0">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="totalPrice">Precio total ($)</label>
+          <input type="number" id="totalPrice" placeholder="0" min="0" step="0.01" required>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Guardar pedido</button>
+          <button type="button" class="btn btn-secondary" id="cancelFormBtn">Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Lista de pedidos -->
+    <section class="orders-section">
+      <div class="orders-list" id="ordersList">
+        <!-- Se renderiza dinámicamente -->
+      </div>
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <p>No hay pedidos que mostrar</p>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de confirmación de borrado -->
+  <div class="modal" id="confirmModal" style="display: none;">
+    <div class="modal-content">
+      <p id="confirmMessage">¿Estás seguro de que querés borrar este pedido?</p>
+      <div class="modal-actions">
+        <button class="btn btn-primary" id="confirmBtn">Borrar</button>
+        <button class="btn btn-secondary" id="cancelBtn">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js?v=14"></script>
+  <script src="js/storage.js?v=14"></script>
+  <script src="js/state.js?v=14"></script>
+  <script src="js/orders.js?v=14"></script>
+  <script src="js/ui.js?v=14"></script>
+  <script src="js/app.js?v=14"></script>
+</body>
+</html>

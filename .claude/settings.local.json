@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m http.server 8000)",
+      "PowerShell(Get-Process python | Where-Object {$_.CommandLine -match \"http.server\"} | Stop-Process -Force)",
+      "PowerShell(netstat -ano)",
+      "PowerShell(Stop-Process -Id 9920 -Force)",
+      "PowerShell(Invoke-WebRequest -Uri http://localhost:8000 -UseBasicParsing -ErrorAction SilentlyContinue)",
+      "PowerShell(netstat -ano | findstr \":8000\" | ForEach-Object { $parts = $_ -split '\\\\s+'; $pid = $parts[-1]; if \\($pid -and $pid -ne '0'\\) { Stop-Process -Id $pid -Force -ErrorAction SilentlyContinue } }; Start-Sleep -Seconds 1; \"Puerto 8000 liberado\")",
+      "PowerShell(netstat -ano | findstr \":8000\" | ForEach-Object { $parts = $_ -split '\\\\s+'; $procId = $parts[-1]; if \\($procId -and $procId -ne '0'\\) { Stop-Process -Id $procId -Force -ErrorAction SilentlyContinue } }; Start-Sleep -Seconds 2; cd \"D:\\\\Documents\\\\chipayedocs\\\\src\"; python -m http.server 8000)",
+      "Bash(git add *)",
+      "Bash(git commit -m 'fix: remove createdAt ordering from GET pedidos endpoint *)"
+    ]
+  }
+}

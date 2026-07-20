@@ -1,0 +1,21 @@
+{
+  "name": "chipaye",
+  "version": "1.0.0",
+  "description": "App PWA para tomar pedidos de chipas artesanales",
+  "private": true,
+  "scripts": {
+    "generate-icons": "node scripts/generate-icons.js",
+    "serve": "http-server src -p 8000"
+  },
+  "keywords": [
+    "pwa",
+    "orders",
+    "chipas",
+    "offline"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "sharp": "^0.32.6"
+  }
+}
