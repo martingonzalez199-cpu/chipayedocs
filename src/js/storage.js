@@ -1,6 +1,7 @@
 // Storage API - Usa backend en lugar de localStorage
 const Storage = (() => {
   const API_URL = CONFIG.BACKEND_URL + '/api/pedidos';
+  const AUTH_HEADERS = { 'x-api-key': CONFIG.API_KEY };
 
   // Intentar cargar desde localStorage como fallback (offline)
   let localCache = [];
@@ -32,7 +33,7 @@ const Storage = (() => {
     // Obtener todos los pedidos (desde backend, con fallback a cache)
     async getAll() {
       try {
-        const response = await fetch(API_URL);
+        const response = await fetch(API_URL, { headers: AUTH_HEADERS });
         if (!response.ok) throw new Error('Error en servidor');
 
         const data = await response.json();
@@ -72,7 +73,7 @@ const Storage = (() => {
 
         const response = await fetch(API_URL, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...AUTH_HEADERS },
           body: JSON.stringify(payload)
         });
 
@@ -102,7 +103,7 @@ const Storage = (() => {
         console.log('UPDATE: Intentando actualizar pedido', id, 'con:', updates);
         const response = await fetch(`${API_URL}/${id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', ...AUTH_HEADERS },
           body: JSON.stringify(updates)
         });
 
@@ -129,7 +130,8 @@ const Storage = (() => {
     async delete(id) {
       try {
         const response = await fetch(`${API_URL}/${id}`, {
-          method: 'DELETE'
+          method: 'DELETE',
+          headers: AUTH_HEADERS
         });
 
         if (!response.ok) throw new Error('Error al eliminar');
