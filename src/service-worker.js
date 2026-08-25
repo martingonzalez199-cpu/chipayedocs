@@ -1,4 +1,4 @@
-const CACHE_NAME = 'chipaye-v1';
+const CACHE_NAME = 'chipaye-v2';
 const urlsToCache = [
   '/',
   '/index.html',
