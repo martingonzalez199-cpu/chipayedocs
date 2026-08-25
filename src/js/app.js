@@ -18,6 +18,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       .catch(error => {
         console.warn('Error al registrar Service Worker:', error);
       });
+
+    // Cuando el service worker nuevo toma control (nuevo deploy detectado),
+    // recargar una vez para no quedar corriendo el JS viejo en memoria.
+    let refreshingAfterUpdate = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      if (refreshingAfterUpdate) return;
+      refreshingAfterUpdate = true;
+      window.location.reload();
+    });
   }
 
   // Registrar PWA manifest
