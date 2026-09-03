@@ -47,6 +47,8 @@ const State = (() => {
       const orders = state.orders;
 
       switch (state.filter) {
+        case 'pending-production':
+          return orders.filter(o => !o.produced);
         case 'pending-delivery':
           return orders.filter(o => !o.delivered);
         case 'pending-payment':
@@ -63,10 +65,11 @@ const State = (() => {
 
     getSummary() {
       const total = state.orders.length;
+      const pendingProduction = state.orders.filter(o => !o.produced).length;
       const pendingDelivery = state.orders.filter(o => !o.delivered).length;
       const pendingPayment = state.orders.filter(o => !o.paid).length;
 
-      return { total, pendingDelivery, pendingPayment };
+      return { total, pendingProduction, pendingDelivery, pendingPayment };
     },
 
     setFilter(filter) {
@@ -87,6 +90,7 @@ const State = (() => {
       try {
         const newOrder = await Storage.add({
           ...orderData,
+          produced: false,
           delivered: false,
           paid: false
         });
@@ -96,6 +100,23 @@ const State = (() => {
         return newOrder;
       } catch (error) {
         console.error('Error agregando pedido:', error);
+        throw error;
+      }
+    },
+
+    async toggleProduced(orderId) {
+      try {
+        const id = parseInt(orderId);
+        const order = state.orders.find(o => o.id === id);
+        if (order) {
+          const updated = await Storage.update(id, {
+            produced: !order.produced
+          });
+          order.produced = updated.produced;
+          notifyObservers();
+        }
+      } catch (error) {
+        console.error('Error actualizando producción:', error);
         throw error;
       }
     },

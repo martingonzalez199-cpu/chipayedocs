@@ -42,7 +42,7 @@ main {
 /* ====== SUMMARY ====== */
 .summary {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: var(--spacing-md);
   margin-bottom: var(--spacing-lg);
 }
@@ -109,6 +109,55 @@ main {
   background-color: var(--color-accent);
   border-color: var(--color-accent);
   color: var(--color-surface);
+}
+
+/* ====== RESUMEN DE PRODUCCIÓN ====== */
+.production-summary {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-md) var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+.production-summary-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0 0 var(--spacing-sm) 0;
+}
+
+.production-summary-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.production-summary-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+  border-bottom: 1px solid var(--color-border-light);
+  font-size: var(--font-size-base);
+}
+
+.production-summary-item:last-child {
+  border-bottom: none;
+}
+
+.production-summary-name {
+  color: var(--color-text);
+}
+
+.production-summary-qty {
+  font-family: var(--font-serif);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-produced);
+  font-size: var(--font-size-lg);
 }
 
 /* ====== FORM SECTION ====== */
@@ -313,6 +362,11 @@ main {
   color: var(--color-text-secondary);
 }
 
+.order-status-badge.produced {
+  background-color: rgba(217, 160, 91, 0.15);
+  color: var(--color-produced);
+}
+
 .order-status-badge.delivered {
   background-color: rgba(195, 129, 59, 0.1);
   color: var(--color-accent);
@@ -415,9 +469,19 @@ main {
   color: var(--color-surface);
 }
 
+.action-btn.active.produced {
+  background-color: var(--color-produced);
+  border-color: var(--color-produced);
+}
+
 .action-btn.active.paid {
   background-color: var(--color-success);
   border-color: var(--color-success);
+}
+
+.action-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .action-btn.delete {

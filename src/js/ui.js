@@ -14,6 +14,7 @@ const UI = (() => {
     totalPrice: document.getElementById('totalPrice'),
     summary: document.getElementById('summary'),
     filters: document.getElementById('filters'),
+    productionSummary: document.getElementById('productionSummary'),
     ordersList: document.getElementById('ordersList'),
     emptyState: document.getElementById('emptyState'),
     confirmModal: document.getElementById('confirmModal'),
@@ -72,12 +73,16 @@ const UI = (() => {
 
   // Renderizar resumen
   function renderSummary(state) {
-    const { total, pendingDelivery, pendingPayment } = state.summary || State.getSummary();
+    const { total, pendingProduction, pendingDelivery, pendingPayment } = state.summary || State.getSummary();
 
     elements.summary.innerHTML = `
       <div class="summary-card">
         <div class="summary-card-label">Pedidos</div>
         <div class="summary-card-value">${total}</div>
+      </div>
+      <div class="summary-card">
+        <div class="summary-card-label">Por producir</div>
+        <div class="summary-card-value">${pendingProduction}</div>
       </div>
       <div class="summary-card">
         <div class="summary-card-label">Por entregar</div>
@@ -97,6 +102,9 @@ const UI = (() => {
     elements.filters.innerHTML = `
       <button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" data-filter="all">
         Todos
+      </button>
+      <button class="filter-btn ${currentFilter === 'pending-production' ? 'active' : ''}" data-filter="pending-production">
+        Chipas a producir
       </button>
       <button class="filter-btn ${currentFilter === 'pending-delivery' ? 'active' : ''}" data-filter="pending-delivery">
         Por entregar
@@ -119,6 +127,7 @@ const UI = (() => {
     const r = 30; // Radio del círculo
     const circumference = 2 * Math.PI * r;
 
+    const produced = order.produced;
     const delivered = order.delivered;
     const paid = order.paid;
 
@@ -131,7 +140,10 @@ const UI = (() => {
       dashOffset = 0; // Lleno
     } else if (delivered) {
       strokeColor = '#C4813B'; // Dorado (entregado)
-      dashOffset = circumference * 0.75; // 25% lleno
+      dashOffset = circumference * 0.34; // ~66% lleno
+    } else if (produced) {
+      strokeColor = '#D9A05B'; // Ámbar claro (producido, falta entregar)
+      dashOffset = circumference * 0.67; // ~33% lleno
     }
 
     return `
@@ -151,6 +163,29 @@ const UI = (() => {
     `;
   }
 
+  // Resumen de cantidades a producir por producto (pestaña "Chipas a producir")
+  function renderProductionSummary(orders) {
+    const summary = Orders.getProductionSummary(orders);
+
+    if (summary.length === 0) {
+      return '';
+    }
+
+    return `
+      <div class="production-summary">
+        <h3 class="production-summary-title">Cantidades a producir</h3>
+        <ul class="production-summary-list">
+          ${summary.map(item => `
+            <li class="production-summary-item">
+              <span class="production-summary-name">${item.name}</span>
+              <span class="production-summary-qty">${item.qty}</span>
+            </li>
+          `).join('')}
+        </ul>
+      </div>
+    `;
+  }
+
   // Renderizar lista de pedidos
   function renderOrders(state) {
     let orders = State.getOrders();
@@ -160,13 +195,20 @@ const UI = (() => {
     console.log('renderOrders - Filtro:', filter);
 
     // Aplicar filtro
-    if (filter === 'pending-delivery') {
+    if (filter === 'pending-production') {
+      orders = orders.filter(o => !o.produced);
+    } else if (filter === 'pending-delivery') {
       orders = orders.filter(o => !o.delivered);
     } else if (filter === 'pending-payment') {
       orders = orders.filter(o => !o.paid);
     }
 
     console.log('renderOrders - Órdenes después de filtro:', orders.length);
+
+    // En la pestaña "Chipas a producir", mostrar el resumen de cantidades por producto
+    elements.productionSummary.innerHTML = filter === 'pending-production'
+      ? renderProductionSummary(orders)
+      : '';
 
     if (orders.length === 0) {
       console.log('No hay órdenes, mostrando empty state');
@@ -180,6 +222,7 @@ const UI = (() => {
 
     elements.ordersList.innerHTML = orders.map(order => {
       const statusLabel = Orders.getStatusLabel(order);
+      const producedClass = order.produced ? 'active produced' : '';
       const deliveryClass = order.delivered ? 'active' : '';
       const paidClass = order.paid ? 'active paid' : '';
 
@@ -188,7 +231,7 @@ const UI = (() => {
           <div class="order-card-content">
             <div class="order-card-header">
               <h2 class="order-card-name">${order.clientName}</h2>
-              <span class="order-status-badge ${order.delivered ? 'delivered' : ''} ${order.paid ? 'paid' : ''}">
+              <span class="order-status-badge ${order.produced ? 'produced' : ''} ${order.delivered ? 'delivered' : ''} ${order.paid ? 'paid' : ''}">
                 ${statusLabel}
               </span>
             </div>
@@ -203,12 +246,15 @@ const UI = (() => {
           </div>
 
           <div class="order-status-ring">
-            <div class="chipa-ring ${order.delivered ? 'delivered' : ''} ${order.paid ? 'paid' : ''}">
+            <div class="chipa-ring ${order.produced ? 'produced' : ''} ${order.delivered ? 'delivered' : ''} ${order.paid ? 'paid' : ''}">
               ${createChipaRingSvg(order)}
             </div>
 
             <div class="order-actions">
-              <button class="action-btn ${deliveryClass}" data-action="delivered" data-order-id="${order.id}">
+              <button class="action-btn ${producedClass}" data-action="produced" data-order-id="${order.id}">
+                ${order.produced ? '✓ Producido' : 'Producir'}
+              </button>
+              <button class="action-btn ${deliveryClass}" data-action="delivered" data-order-id="${order.id}" ${order.produced ? '' : 'disabled title="Primero hay que producir el pedido"'}>
                 ${order.delivered ? '✓ Entregado' : 'Entregar'}
               </button>
               <button class="action-btn ${paidClass}" data-action="paid" data-order-id="${order.id}">
@@ -231,7 +277,10 @@ const UI = (() => {
 
         console.log('Botón clickeado:', { orderId, action });
 
-        if (action === 'delivered') {
+        if (action === 'produced') {
+          console.log('Ejecutando toggleProduced con ID:', orderId);
+          State.toggleProduced(orderId);
+        } else if (action === 'delivered') {
           console.log('Ejecutando toggleDelivered con ID:', orderId);
           State.toggleDelivered(orderId);
         } else if (action === 'paid') {
