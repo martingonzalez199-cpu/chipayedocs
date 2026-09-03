@@ -196,7 +196,9 @@ const UI = (() => {
 
     // Aplicar filtro
     if (filter === 'pending-production') {
-      orders = orders.filter(o => !o.produced);
+      // Si ya está entregado, ya se produjo en la práctica (aunque el flag
+      // quedó en false por ser un pedido de antes de esta función).
+      orders = orders.filter(o => !o.produced && !o.delivered);
     } else if (filter === 'pending-delivery') {
       orders = orders.filter(o => !o.delivered);
     } else if (filter === 'pending-payment') {

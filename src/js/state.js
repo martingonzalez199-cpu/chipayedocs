@@ -48,7 +48,7 @@ const State = (() => {
 
       switch (state.filter) {
         case 'pending-production':
-          return orders.filter(o => !o.produced);
+          return orders.filter(o => !o.produced && !o.delivered);
         case 'pending-delivery':
           return orders.filter(o => !o.delivered);
         case 'pending-payment':
@@ -65,7 +65,7 @@ const State = (() => {
 
     getSummary() {
       const total = state.orders.length;
-      const pendingProduction = state.orders.filter(o => !o.produced).length;
+      const pendingProduction = state.orders.filter(o => !o.produced && !o.delivered).length;
       const pendingDelivery = state.orders.filter(o => !o.delivered).length;
       const pendingPayment = state.orders.filter(o => !o.paid).length;
 
