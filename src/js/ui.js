@@ -6,11 +6,6 @@ const UI = (() => {
     toggleFormBtn: document.getElementById('toggleFormBtn'),
     cancelFormBtn: document.getElementById('cancelFormBtn'),
     clientName: document.getElementById('clientName'),
-    qty1: document.getElementById('qty1'),
-    qty2: document.getElementById('qty2'),
-    qty3: document.getElementById('qty3'),
-    qty4: document.getElementById('qty4'),
-    qty5: document.getElementById('qty5'),
     totalPrice: document.getElementById('totalPrice'),
     summary: document.getElementById('summary'),
     filters: document.getElementById('filters'),
@@ -22,6 +17,12 @@ const UI = (() => {
     cancelBtn: document.getElementById('cancelBtn'),
     confirmMessage: document.getElementById('confirmMessage')
   };
+
+  // Un input de cantidad por cada producto en Orders.PRODUCTS
+  const qtyInputs = {};
+  Orders.PRODUCTS.forEach(product => {
+    qtyInputs[product.id] = document.getElementById(product.id);
+  });
 
   // Evento: Toggle formulario
   elements.toggleFormBtn.addEventListener('click', () => {
@@ -47,13 +48,11 @@ const UI = (() => {
 
     const formData = {
       clientName: elements.clientName.value,
-      qty1: elements.qty1.value,
-      qty2: elements.qty2.value,
-      qty3: elements.qty3.value,
-      qty4: elements.qty4.value,
-      qty5: elements.qty5.value,
       totalPrice: elements.totalPrice.value
     };
+    Orders.PRODUCTS.forEach(product => {
+      formData[product.id] = qtyInputs[product.id].value;
+    });
 
     const errors = Orders.validate(formData);
 

@@ -5,10 +5,14 @@ const Orders = (() => {
     { id: 'qty2', name: 'Chipa común 1/2kg' },
     { id: 'qty3', name: 'Chipan común 1kg' },
     { id: 'qty4', name: 'Chipan común 1/2kg' },
-    { id: 'qty5', name: 'Chipan 200gr x 1kg' }
+    { id: 'qty5', name: 'Chipan 200gr x 1kg' },
+    { id: 'qty6', name: 'Chipa en palitos x 1kg' },
+    { id: 'qty7', name: 'Chipa en palitos x 1/2kg' }
   ];
 
   return {
+    PRODUCTS,
+
     // Validar datos de un nuevo pedido
     validate(data) {
       const errors = [];
@@ -22,9 +26,7 @@ const Orders = (() => {
       }
 
       // Al menos un producto debe tener cantidad
-      const hasProducts = [data.qty1, data.qty2, data.qty3, data.qty4, data.qty5].some(
-        qty => qty && parseInt(qty) > 0
-      );
+      const hasProducts = PRODUCTS.some(p => data[p.id] && parseInt(data[p.id]) > 0);
 
       if (!hasProducts) {
         errors.push('Debe seleccionar al menos un producto');
@@ -36,34 +38,21 @@ const Orders = (() => {
     // Crear un nuevo pedido desde datos de formulario
     createFromForm(formData) {
       const items = [];
+      const quantities = {};
 
-      if (parseInt(formData.qty1) > 0) {
-        items.push(`${formData.qty1}x Chipa común 1kg`);
-      }
-      if (parseInt(formData.qty2) > 0) {
-        items.push(`${formData.qty2}x Chipa común 1/2kg`);
-      }
-      if (parseInt(formData.qty3) > 0) {
-        items.push(`${formData.qty3}x Chipan común 1kg`);
-      }
-      if (parseInt(formData.qty4) > 0) {
-        items.push(`${formData.qty4}x Chipan común 1/2kg`);
-      }
-      if (parseInt(formData.qty5) > 0) {
-        items.push(`${formData.qty5}x Chipan 200gr x 1kg`);
-      }
+      PRODUCTS.forEach(product => {
+        const qty = parseInt(formData[product.id]) || 0;
+        quantities[product.id] = qty;
+        if (qty > 0) {
+          items.push(`${qty}x ${product.name}`);
+        }
+      });
 
       return {
         clientName: formData.clientName.trim(),
-        items: items,
+        items,
         totalPrice: parseFloat(formData.totalPrice),
-        quantities: {
-          qty1: parseInt(formData.qty1) || 0,
-          qty2: parseInt(formData.qty2) || 0,
-          qty3: parseInt(formData.qty3) || 0,
-          qty4: parseInt(formData.qty4) || 0,
-          qty5: parseInt(formData.qty5) || 0
-        }
+        quantities
       };
     },
 
